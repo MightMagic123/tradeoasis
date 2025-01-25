@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'stock',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +55,7 @@ ROOT_URLCONF = "tradeoasis.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ['tradeoasis/templates'],
+        "DIRS": ['tradeoasis/templates', 'stock/templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

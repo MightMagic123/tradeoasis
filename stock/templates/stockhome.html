@@ -1,0 +1,116 @@
+<!-- filepath: /C:/Users/jagor/Documents/GitHub/tradeoasis/stock/templates/stock/home.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Popular Stocks - TradeOasis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #0f0;
+        }
+        header {
+            background-color: #0a0;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #0b0;
+        }
+        nav a {
+            color: #fff;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover {
+            background-color: #0c0;
+        }
+        .container {
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #0a0;
+            color: white;
+        }
+        footer {
+            background-color: #0a0;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Popular Stocks</h1>
+    </header>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/test/">Test</a>
+        <a href="/stock/">Stock Home</a>
+    </nav>
+    <div class="container">
+        <h2>Most Popular Stocks</h2>
+        <table>
+            <tr>
+                <th>Stock</th>
+                <th>Symbol</th>
+                <th>Price</th>
+                <th>Change</th>
+            </tr>
+            <tr>
+                <td>Apple Inc.</td>
+                <td>AAPL</td>
+                <td>$150.00</td>
+                <td>+1.25%</td>
+            </tr>
+            <tr>
+                <td>Amazon.com Inc.</td>
+                <td>AMZN</td>
+                <td>$3,200.00</td>
+                <td>-0.50%</td>
+            </tr>
+            <tr>
+                <td>Alphabet Inc.</td>
+                <td>GOOGL</td>
+                <td>$2,800.00</td>
+                <td>+0.75%</td>
+            </tr>
+            <tr>
+                <td>Microsoft Corporation</td>
+                <td>MSFT</td>
+                <td>$280.00</td>
+                <td>+0.90%</td>
+            </tr>
+            <tr>
+                <td>Tesla Inc.</td>
+                <td>TSLA</td>
+                <td>$700.00</td>
+                <td>-1.20%</td>
+            </tr>
+        </table>
+    </div>
+    <footer>
+        <p>&copy; 2023 TradeOasis. All rights reserved.</p>
+    </footer>
+</body>
+</html>

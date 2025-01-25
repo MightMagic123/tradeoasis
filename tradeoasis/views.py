@@ -9,3 +9,6 @@ def testing(request):
 
 def home(request):
     return render(request, 'home.html')
+
+def stock(request):
+    return render(request, 'stock.html')
