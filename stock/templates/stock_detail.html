@@ -1,41 +1,46 @@
 <!-- stock_detail.html -->
 <html>
 <head>
-    <title>{{ ticker }} Stock Data</title>
+    <title>{{ stock_info.ticker }} Stock Data</title>
 </head>
 <body>
-    <h1>{{ ticker }} Stock Data</h1>
+    {% if error %}
+        <h1>Error</h1>
+        <p>{{ error }}</p>
+    {% else %}
+        <h1>{{ stock_info.ticker }} Stock Data</h1>
 
-    <!-- Display stock info -->
-    <h2>Company Information</h2>
-    <ul>
-        <li><strong>Company Name:</strong> {{ company_info.name }}</li>
-        <li><strong>Market Cap:</strong> {{ company_info.marketCap }}</li>
-        <li><strong>Sector:</strong> {{ company_info.sector }}</li>
-        <li><strong>Industry:</strong> {{ company_info.industry }}</li>
-        <!--<li><strong>Current Price:</strong> ${{ stock_data['Close'].iloc[0] }}</li> -->
-    </ul>
+        <!-- Display company info -->
+        <h2>Company Information</h2>
+        {% if company_info.name %}
+            <ul>
+                <li><strong>Company Name:</strong> {{ company_info.name }}</li>
+                <li><strong>Market Cap:</strong> {{ company_info.marketCap }}</li>
+                <li><strong>Sector:</strong> {{ company_info.sector }}</li>
+                <li><strong>Industry:</strong> {{ company_info.industry }}</li>
+            </ul>
+        {% else %}
+            <p>No company information available.</p>
+        {% endif %}
 
-    <!-- Display historical stock data -->
-    <h2>Stock Data (Last Day)</h2>
-    <table border="1">
-        <tr>
-            <th>Date</th>
-            <th>Open</th>
-            <th>High</th>
-            <th>Low</th>
-            <th>Close</th>
-            <th>Volume</th>
-        </tr>
-        <tr>
-            <td>{{ stock_data.index[0] }}</td>
-            <td>${{ stock_data['Open'].iloc[0] }}</td>
-            <td>${{ stock_data['High'].iloc[0] }}</td>
-            <td>${{ stock_data['Low'].iloc[0] }}</td>
-            <!--<td>${{ stock_data['Close'].iloc[0] }}</td>
-            <td>{{ stock_data['Volume'].iloc[0] }}</td> -->
-        </tr>
-    </table>
-
+        <!-- Display stock info -->
+        <h2>Stock Data (Last Day)</h2>
+        <table border="1">
+            <tr>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Close</th>
+                <th>Volume</th>
+            </tr>
+            <tr>
+                <td>${{ stock_info.open }}</td>
+                <td>${{ stock_info.high }}</td>
+                <td>${{ stock_info.low }}</td>
+                <td>${{ stock_info.close }}</td>
+                <td>{{ stock_info.volume }}</td>
+            </tr>
+        </table>
+    {% endif %}
 </body>
 </html>
