@@ -1,8 +1,14 @@
 from django.shortcuts import render
 import yfinance as yf
+from stock.stocks import get_sp500_tickers
 
 def stock_home(request):
-    return render(request, 'stockhome.html')
+    tickers, company_names = get_sp500_tickers(True)
+    ticker_company_pairs = zip(tickers, company_names)
+    context = {
+        'ticker_company_pairs': ticker_company_pairs
+    }
+    return render(request, 'stockhome.html', context)
 
 # views.py
 from django.shortcuts import render

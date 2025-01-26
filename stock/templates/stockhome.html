@@ -1,4 +1,3 @@
-<!-- filepath: /C:/Users/jagor/Documents/GitHub/tradeoasis/stock/templates/stock/home.html -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,21 +39,14 @@
         }
         th, td {
             padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #0a0;
-            color: white;
-        }
-        footer {
-            background-color: #0a0;
-            color: #fff;
+            border: 1px solid #0f0;
             text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+        }
+        a {
+            color: #0f0; /* Green color for hyperlinks */
+        }
+        a:hover {
+            color: #ff0; /* Yellow color for hyperlinks on hover */
         }
     </style>
 </head>
@@ -64,53 +56,24 @@
     </header>
     <nav>
         <a href="/">Home</a>
-        <a href="/about/">About</a>
-        <a href="/test/">Test</a>
-        <a href="/stock/">Stock Home</a>
+        <a href="/stocks">Stocks</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
     </nav>
     <div class="container">
-        <h2>Most Popular Stocks</h2>
+        <h2>Stock Tickers</h2>
         <table>
             <tr>
-                <th>Stock</th>
-                <th>Symbol</th>
-                <th>Price</th>
-                <th>Change</th>
+                <th>Ticker</th>
+                <th>Company Name</th>
             </tr>
-            <tr>
-                <td>Apple Inc.</td>
-                <td>AAPL</td>
-                <td>$150.00</td>
-                <td>+1.25%</td>
-            </tr>
-            <tr>
-                <td>Amazon.com Inc.</td>
-                <td>AMZN</td>
-                <td>$3,200.00</td>
-                <td>-0.50%</td>
-            </tr>
-            <tr>
-                <td>Alphabet Inc.</td>
-                <td>GOOGL</td>
-                <td>$2,800.00</td>
-                <td>+0.75%</td>
-            </tr>
-            <tr>
-                <td>Microsoft Corporation</td>
-                <td>MSFT</td>
-                <td>$280.00</td>
-                <td>+0.90%</td>
-            </tr>
-            <tr>
-                <td>Tesla Inc.</td>
-                <td>TSLA</td>
-                <td>$700.00</td>
-                <td>-1.20%</td>
-            </tr>
+            {% for ticker, company_name in ticker_company_pairs %}
+                <tr>
+                    <td><a href="/stock/{{ ticker }}">{{ ticker }}</a></td>
+                    <td>{{ company_name }}</td>
+                </tr>
+            {% endfor %}
         </table>
     </div>
-    <footer>
-        <p>&copy; 2023 TradeOasis. All rights reserved.</p>
-    </footer>
 </body>
 </html>
