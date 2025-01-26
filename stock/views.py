@@ -1,6 +1,7 @@
 from django.shortcuts import render
 import yfinance as yf
 from stock.stocks import get_sp500_tickers
+from django.http import JsonResponse
 
 def stock_home(request):
     tickers, company_names = get_sp500_tickers(True)
@@ -11,42 +12,58 @@ def stock_home(request):
     return render(request, 'stockhome.html', context)
 
 # views.py
+
 from django.shortcuts import render
+from django.http import JsonResponse
 import yfinance as yf
 
 def stock_detail(request, ticker):
     try:
-        # Fetch stock data using yfinance
+        # Fetch stock data from Yahoo Finance for the last year (1 year)
         stock = yf.Ticker(ticker)
-        stock_data = stock.history(period="1d")
+        stock_data = stock.history(period="1y")  # Last 1 year data
+        
+        # Get current stock price, market cap, and P/E ratio
+        current_price = stock.history(period="1d")['Close'].iloc[0]
+        market_cap = stock.info.get('marketCap', 'N/A')
+        pe_ratio = stock.info.get('trailingPE', 'N/A')
 
-        # Ensure there is data for the stock
-        if stock_data.empty:
-            context = {'error': f"No data available for ticker '{ticker}'."}
-            return render(request, 'stocks/stock_detail.html', context)
+        # Prepare the stock data for the chart
+        dates = stock_data.index.strftime('%Y-%m-%d').tolist()
+        close_prices = stock_data['Close'].tolist()
 
-        # Extract relevant data
-        stock_info = {
+        # Render the stock details page
+        return render(request, 'stock_detail.html', {
             'ticker': ticker,
-            'open': stock_data['Open'].iloc[0],
-            'high': stock_data['High'].iloc[0],
-            'low': stock_data['Low'].iloc[0],
-            'close': stock_data['Close'].iloc[0],
-            'volume': stock_data['Volume'].iloc[0],
+            'current_price': current_price,
+            'market_cap': market_cap,
+            'pe_ratio': pe_ratio,
+            'stock_data': {
+                'dates': dates,
+                'close_prices': close_prices
+            }
+        })
+    
+    except Exception as e:
+        return render(request, 'error.html', {'message': str(e)})
+
+def stock_data(request, ticker):
+    try:
+        # Fetch historical stock data
+        stock = yf.Ticker(ticker)
+        stock_data = stock.history(period="6mo")  # Fetch 6 months of data
+
+        # Ensure data exists
+        if stock_data.empty:
+            return JsonResponse({'error': f"No data available for ticker '{ticker}'."}, status=404)
+
+        # Prepare data for the chart
+        chart_data = {
+            'dates': stock_data.index.strftime('%Y-%m-%d').tolist(),
+            'close_prices': stock_data['Close'].tolist(),
         }
 
-        # Add optional company information
-        company_info = stock.info if stock.info else {}
-
-        # Pass the extracted data to the template
-        context = {
-            'stock_info': stock_info,
-            'company_info': company_info,
-        }
-
-        return render(request, 'stock_detail.html', context)
+        return JsonResponse(chart_data)
 
     except Exception as e:
-        # Handle errors (e.g., invalid ticker or network issue)
-        context = {'error': str(e)}
-        return render(request, 'stock_detail.html', context)
+        return JsonResponse({'error': str(e)}, status=500)

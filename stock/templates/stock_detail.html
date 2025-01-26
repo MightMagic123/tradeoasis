@@ -1,46 +1,68 @@
-<!-- stock_detail.html -->
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>{{ stock_info.ticker }} Stock Data</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Details</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    {% if error %}
-        <h1>Error</h1>
-        <p>{{ error }}</p>
-    {% else %}
-        <h1>{{ stock_info.ticker }} Stock Data</h1>
+    <h1>Stock Details for {{ ticker }}</h1>
+    <canvas id="stockChart" width="800" height="400"></canvas>
 
-        <!-- Display company info -->
-        <h2>Company Information</h2>
-        {% if company_info.name %}
-            <ul>
-                <li><strong>Company Name:</strong> {{ company_info.name }}</li>
-                <li><strong>Market Cap:</strong> {{ company_info.marketCap }}</li>
-                <li><strong>Sector:</strong> {{ company_info.sector }}</li>
-                <li><strong>Industry:</strong> {{ company_info.industry }}</li>
-            </ul>
-        {% else %}
-            <p>No company information available.</p>
-        {% endif %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ticker = "{{ ticker }}";
 
-        <!-- Display stock info -->
-        <h2>Stock Data (Last Day)</h2>
-        <table border="1">
-            <tr>
-                <th>Open</th>
-                <th>High</th>
-                <th>Low</th>
-                <th>Close</th>
-                <th>Volume</th>
-            </tr>
-            <tr>
-                <td>${{ stock_info.open }}</td>
-                <td>${{ stock_info.high }}</td>
-                <td>${{ stock_info.low }}</td>
-                <td>${{ stock_info.close }}</td>
-                <td>{{ stock_info.volume }}</td>
-            </tr>
-        </table>
-    {% endif %}
+            // Fetch stock data
+            fetch(`/stock/${ticker}/data/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+
+                    // Extract data for the chart
+                    const dates = data.dates;
+                    const closePrices = data.close_prices;
+
+                    // Render the chart using Chart.js
+                    const ctx = document.getElementById('stockChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: `${ticker} Close Prices`,
+                                data: closePrices,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderWidth: 1,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: { display: true, text: 'Date' },
+                                    ticks: { maxTicksLimit: 12 }
+                                },
+                                y: {
+                                    title: { display: true, text: 'Close Price' },
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    alert(`Unable to load stock data: ${error.message}`);
+                });
+        });
+    </script>
 </body>
 </html>
