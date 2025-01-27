@@ -24,4 +24,5 @@ urlpatterns = [
     path("about/", views.about),
     path("test/", views.testing),
     path('stock/', include('stock.urls')),
+    path('accounts/', include('accounts.urls')),
 ]

@@ -1,79 +1,29 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Popular Stocks - TradeOasis</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #0f0;
-        }
-        header {
-            background-color: #0a0;
-            color: #fff;
-            padding: 10px 0;
-            text-align: center;
-        }
-        nav {
-            display: flex;
-            justify-content: center;
-            background-color: #0b0;
-        }
-        nav a {
-            color: #fff;
-            padding: 14px 20px;
-            text-decoration: none;
-            text-align: center;
-        }
-        nav a:hover {
-            background-color: #0c0;
-        }
-        .container {
-            padding: 20px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #0f0;
-            text-align: center;
-        }
-        a {
-            color: #0f0; /* Green color for hyperlinks */
-        }
-        a:hover {
-            color: #ff0; /* Yellow color for hyperlinks on hover */
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Popular Stocks</h1>
-    </header>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/stocks">Stocks</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
-    </nav>
-    <div class="container">
-        <h2>Stock Tickers</h2>
-        <table>
-            <tr>
-                <th>Ticker</th>
-                <th>Company Name</th>
-            </tr>
-            {% for ticker, company_name in ticker_company_pairs %}
-                <tr>
-                    <td><a href="/stock/{{ ticker }}">{{ ticker }}</a></td>
-                    <td>{{ company_name }}</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-</body>
-</html>
+{% extends 'base_layout.html' %}
+
+{% block title %}Popular Stocks - TradeOasis{% endblock %}
+
+{% block content %}
+
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-2xl font-semibold text-green-500 mb-6">Popular Stocks</h2>
+  
+  <table class="w-full border-collapse border border-green-500 text-green-500">
+    <thead>
+      <tr class="bg-green-800 text-white">
+        <th class="p-4 border border-green-500">Ticker</th>
+        <th class="p-4 border border-green-500">Company Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ticker, company_name in ticker_company_pairs %}
+        <tr class="hover:bg-green-900">
+          <td class="p-4 border border-green-500 text-center">
+            <a href="/stock/{{ ticker }}" class="text-green-400 hover:text-yellow-400">{{ ticker }}</a>
+          </td>
+          <td class="p-4 border border-green-500 text-center">{{ company_name }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

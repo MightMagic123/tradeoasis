@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#16A34A', // Green
+            secondary: '#22C55E', // Lighter Green
+          },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="bg-gray-900 text-gray-100">
+
+  <!-- Header Section -->
+  <header class="bg-green-800 text-white py-6">
+    <div class="container mx-auto text-center">
+      <h1 class="text-3xl font-bold">TradeOasis</h1>
+      <p class="mt-2">Your one-stop platform for trading stocks</p>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="bg-green-700">
+    <div class="container mx-auto flex justify-center space-x-8 py-4">
+      <a href="/" class="text-white hover:bg-green-600 py-2 px-4 rounded">Home</a>
+      <a href="/stock" class="text-white hover:bg-green-600 py-2 px-4 rounded">Stocks</a>
+      <a href="/about" class="text-white hover:bg-green-600 py-2 px-4 rounded">About</a>
+      <a href="/accounts" class="text-white hover:bg-green-600 py-2 px-4 rounded">Profile</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-6">
+    {% block content %}
+    <!-- Dynamic content goes here -->
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-green-800 text-white py-4 mt-8">
+    <div class="container mx-auto text-center">
+      <p>&copy; 2025 TradeOasis. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
