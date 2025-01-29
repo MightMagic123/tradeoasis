@@ -7,6 +7,11 @@
 <div class="container mx-auto px-4 py-8">
   <h2 class="text-2xl font-semibold text-green-500 mb-6">Popular Stocks</h2>
   
+  <!-- Search bar -->
+  <div class="mb-6">
+    <input type="text" id="search" placeholder="Search for a stock..." class="w-full p-2 border border-green-500 text-green-500 bg-black">
+  </div>
+
   <table class="w-full border-collapse border border-green-500 text-green-500">
     <thead>
       <tr class="bg-green-800 text-white">
@@ -14,7 +19,7 @@
         <th class="p-4 border border-green-500">Company Name</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="stock-table">
       {% for ticker, company_name in ticker_company_pairs %}
         <tr class="hover:bg-green-900">
           <td class="p-4 border border-green-500 text-center">
@@ -26,4 +31,21 @@
     </tbody>
   </table>
 </div>
+
+<script>
+  document.getElementById('search').addEventListener('input', function() {
+    var searchValue = this.value.toLowerCase();
+    var rows = document.querySelectorAll('#stock-table tr');
+    rows.forEach(function(row) {
+      var ticker = row.querySelector('td:first-child').textContent.toLowerCase();
+      var companyName = row.querySelector('td:last-child').textContent.toLowerCase();
+      if (ticker.includes(searchValue) || companyName.includes(searchValue)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  });
+</script>
+
 {% endblock %}
