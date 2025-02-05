@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 import yfinance as yf
 from stock.stocks import get_sp500_tickers
 from django.http import JsonResponse
@@ -17,6 +18,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import yfinance as yf
 
+@login_required
 def stock_detail(request, ticker):
     try:
         # Fetch stock data from Yahoo Finance for the last year (1 year)

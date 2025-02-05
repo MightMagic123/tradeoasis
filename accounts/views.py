@@ -6,7 +6,7 @@ import logging
 # Create your views here.
 
 def accounts(request):
-    return render(request, 'accounts.html')
+    return render(request, 'accounts.html', {'user': request.user})
 
 def register(request):
     if request.method == 'POST':
