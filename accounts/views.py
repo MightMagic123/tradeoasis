@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from .forms import CustomUserCreationForm
 from django.urls import reverse
 import logging
@@ -34,3 +34,9 @@ def login(request):
             logging.warning("Invalid login credentials.")
             return render(request, 'login.html', {'error': 'Invalid username or password'})
     return render(request, 'login.html')
+
+def logout(request):
+    auth_logout(request)
+    logging.info("User logged out successfully.")
+    return redirect('home')
+
