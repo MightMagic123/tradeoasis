@@ -1,68 +1,77 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Details</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <h1>Stock Details for {{ ticker }}</h1>
-    <canvas id="stockChart" width="800" height="400"></canvas>
+{% extends 'base_layout.html' %}
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const ticker = "{{ ticker }}";
+{% block title %}Stock Details - {{ ticker }}{% endblock %}
 
-            // Fetch stock data
-            fetch(`/stock/${ticker}/data/`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
+{% block content %}
+<div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold text-green-400 mb-4">{{ stock.name }} ({{ ticker }})</h1>
+    
+    <!-- Stock Information -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="p-4 bg-gray-700 rounded-lg">
+            <h2 class="text-xl font-semibold">Current Price</h2>
+            <p class="text-green-400 text-2xl">${{ current_price }}</p>
+        </div>
+        <div class="p-4 bg-gray-700 rounded-lg">
+            <h2 class="text-xl font-semibold">Sector</h2>
+            <p class="text-green-400 text-2xl">{{ stock_db.sector }}</p>
+        </div>
+        <div class="p-4 bg-gray-700 rounded-lg">
+            <h2 class="text-xl font-semibold">P/E Ratio</h2>
+            <p class="text-green-400 text-2xl">{{ pe_ratio }}</p>
+        </div>
+    </div>
 
-                    // Extract data for the chart
-                    const dates = data.dates;
-                    const closePrices = data.close_prices;
+    <div class="mt-4 text-center p-4 bg-gray-700 rounded-lg">
+        <details class="group bg-gray-700 text-white p-4 rounded-md w-3/4 mx-auto transition-all duration-300 ease-in-out">
+            <summary class="cursor-pointer text-xl font-semibold focus:outline-none group-open:underline">
+                Stock Description
+            </summary>
+            <p class="mt-2 transition-opacity duration-300 ease-in-out opacity-0 group-open:opacity-100">{{ stock_db.short_info }}</p>
+        </details>
+    </div>
+    
+    <!-- Stock Chart -->
+    <div class="mt-6">
+        <h2 class="text-xl font-semibold">Stock Price History</h2>
+        <canvas id="stockChart" width="800" height="400" class="mt-4"></canvas>
+    </div>
+</div>
 
-                    // Render the chart using Chart.js
-                    const ctx = document.getElementById('stockChart').getContext('2d');
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: dates,
-                            datasets: [{
-                                label: `${ticker} Close Prices`,
-                                data: closePrices,
-                                borderColor: 'rgba(75, 192, 192, 1)',
-                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                borderWidth: 1,
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            scales: {
-                                x: {
-                                    title: { display: true, text: 'Date' },
-                                    ticks: { maxTicksLimit: 12 }
-                                },
-                                y: {
-                                    title: { display: true, text: 'Close Price' },
-                                }
-                            }
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        fetch("/stock/{{ ticker }}/data/")
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Error loading stock data: " + data.error);
+                    return;
+                }
+
+                const ctx = document.getElementById('stockChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [{
+                            label: "{{ ticker }} Close Prices",
+                            data: data.close_prices,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderWidth: 1,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: { title: { display: true, text: 'Date' } },
+                            y: { title: { display: true, text: 'Close Price' } }
                         }
-                    });
-                })
-                .catch(error => {
-                    alert(`Unable to load stock data: ${error.message}`);
+                    }
                 });
-        });
-    </script>
-</body>
-</html>
+            })
+            .catch(error => alert("Unable to load stock data: " + error.message));
+    });
+</script>
+{% endblock %}

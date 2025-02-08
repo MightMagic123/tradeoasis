@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 import yfinance as yf
 from stock.stocks import get_sp500_tickers
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from stock.models import Stock
 
 def stock_home(request):
     tickers, company_names = get_sp500_tickers(True)
@@ -14,13 +16,12 @@ def stock_home(request):
 
 # views.py
 
-from django.shortcuts import render
-from django.http import JsonResponse
-import yfinance as yf
-
 @login_required
 def stock_detail(request, ticker):
     try:
+        # Fetch stock details from the database
+        stock_db = get_object_or_404(Stock, ticker=ticker)
+
         # Fetch stock data from Yahoo Finance for the last year (1 year)
         stock = yf.Ticker(ticker)
         stock_data = stock.history(period="1y")  # Last 1 year data
@@ -36,6 +37,7 @@ def stock_detail(request, ticker):
 
         # Render the stock details page
         return render(request, 'stock_detail.html', {
+            'stock_db': stock_db, # Stock details from the database
             'ticker': ticker,
             'current_price': current_price,
             'market_cap': market_cap,
