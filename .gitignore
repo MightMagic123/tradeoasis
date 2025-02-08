@@ -1,2 +1,3 @@
 .venv/
 stufftodowhenstarting.txt
+db.sqlite3
