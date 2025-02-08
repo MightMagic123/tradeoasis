@@ -6,19 +6,22 @@ import logging
 # Create your views here.
 
 def accounts(request):
-    return render(request, 'accounts.html', {'user': request.user})
+    user = request.user
+    if not request.user.is_authenticated:  # if the user is not authenticated, redirect to login page    
+        return render(request, 'accounts.html', {'user': user})
+    
+    return render(request, 'yourprofile.html', {'user': user})
+    
 
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            print(form.errors)#!maknuti kasnije, al treba ovo displayat useru, trenutno se ni jedan error ne prikazuje na webpageu
             form.save()
             logging.info("User registered successfully.")
             return redirect(reverse('login'))
         else:
             logging.warning("Form is not valid.")
-            print(form.errors)#!maknuti kasnije
     else:
         form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
