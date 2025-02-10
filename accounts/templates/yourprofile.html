@@ -26,6 +26,10 @@
             {% block content %}
                 <div>Username: {{ user.username }}</div>
                 <div>Email: {{ user.email }}</div>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-green-500 text-white py-2 px-4 rounded">Logout</button>
+                </form>
             {% endblock %}
         </div>
     </body>
