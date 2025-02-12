@@ -21,16 +21,21 @@
 <body class="bg-gray-900 text-gray-100">
 
   <!-- Header Section -->
-  <header class="bg-green-800 text-white py-6 flex justify-between items-center">
+  <header class="bg-green-800 text-white py-6 flex justify-between items-center relative">
+    <!-- Logo -->
     <div class="ml-4">
       <a href="/" class="text-6xl font-bold">TradeOasis</a>
     </div>
-    <nav class="flex space-x-6 text-lg">
+  
+    <!-- Centered Navigation -->
+    <nav class="absolute left-1/2 transform -translate-x-1/2 flex space-x-6 text-lg">
       <a href="/" class="text-white hover:bg-green-600 py-2 px-4 rounded">Home</a>
       <a href="/stock" class="text-white hover:bg-green-600 py-2 px-4 rounded">Stocks</a>
       <a href="/about" class="text-white hover:bg-green-600 py-2 px-4 rounded">About</a>
       <a href="/accounts" class="text-white hover:bg-green-600 py-2 px-4 rounded">Profile</a>
     </nav>
+  
+    <!-- User Menu (Right) -->
     <div class="mr-4">
       {% if user.is_authenticated %}
         <div class="mr-4 relative text-white hover:bg-green-700 py-2 px-4 rounded group">
@@ -47,15 +52,13 @@
             </li>
           </ul>
         </div>
-      
-      
-      
       {% else %}
         <a href="{% url 'login' %}" class="text-white hover:bg-green-700 py-2 px-4 rounded border border-white">Login</a>
         <a href="{% url 'register' %}" class="bg-white text-green-800 hover:bg-green-100 py-2 px-6 rounded font-semibold">Get Started</a>
       {% endif %}
     </div>
   </header>
+  
 
   <!-- Main Content -->
   <main class="container mx-auto px-4 py-6">
