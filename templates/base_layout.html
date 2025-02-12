@@ -23,27 +23,39 @@
   <!-- Header Section -->
   <header class="bg-green-800 text-white py-6 flex justify-between items-center">
     <div class="ml-4">
-      <a href="/" class="text-3xl font-bold">TradeOasis</a>
-      <p class="mt-2">Your one-stop platform for trading stocks</p>
+      <a href="/" class="text-6xl font-bold">TradeOasis</a>
     </div>
-    <div class="mr-4 flex items-center space-x-4">
-      {% if user.is_authenticated %}
-        <a href="/accounts" class="text-white">{{ user.username }}</a>
-      {% else %}
-        <a href="{% url 'login' %}" class="text-white">Login</a>
-      {% endif %}
-    </div>
-  </header>
-
-  <!-- Navigation Bar -->
-  <nav class="bg-green-700">
-    <div class="container mx-auto flex justify-center space-x-8 py-4">
+    <nav class="flex space-x-6 text-lg">
       <a href="/" class="text-white hover:bg-green-600 py-2 px-4 rounded">Home</a>
       <a href="/stock" class="text-white hover:bg-green-600 py-2 px-4 rounded">Stocks</a>
       <a href="/about" class="text-white hover:bg-green-600 py-2 px-4 rounded">About</a>
       <a href="/accounts" class="text-white hover:bg-green-600 py-2 px-4 rounded">Profile</a>
+    </nav>
+    <div class="mr-4">
+      {% if user.is_authenticated %}
+        <div class="mr-4 relative text-white hover:bg-green-700 py-2 px-4 rounded group">
+          <a href="/accounts" class="text-white text-xl block">{{ user.username }}</a>
+          <ul class="absolute right-0 bg-gray-800 w-36 mt-1 invisible group-hover:visible flex flex-col rounded-lg shadow-lg transition-all duration-300 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100">
+            <li><a href="#" class="block py-2 px-4 hover:bg-green-700 text-white">My Profile</a></li>
+            <li><a href="#" class="block py-2 px-4 hover:bg-green-700 text-white">My Preferences</a></li>
+            <li><a href="#" class="block py-2 px-4 hover:bg-green-700 text-white">Help</a></li>
+            <li>
+              <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="w-full text-left block py-2 px-4 hover:bg-red-600 text-white">Logout</button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      
+      
+      
+      {% else %}
+        <a href="{% url 'login' %}" class="text-white hover:bg-green-700 py-2 px-4 rounded border border-white">Login</a>
+        <a href="{% url 'register' %}" class="bg-white text-green-800 hover:bg-green-100 py-2 px-6 rounded font-semibold">Get Started</a>
+      {% endif %}
     </div>
-  </nav>
+  </header>
 
   <!-- Main Content -->
   <main class="container mx-auto px-4 py-6">
