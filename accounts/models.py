@@ -23,18 +23,18 @@ class Portfolio(models.Model):
 class PortfolioItem(models.Model):
     portfolio = models.ForeignKey(Portfolio, on_delete=models.CASCADE, related_name="items")
     ticker = models.CharField(max_length=10)
-    quantity = models.DecimalField(max_digits=10, decimal_places=5)
-    purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.DecimalField(max_digits=15, decimal_places=6)  # Increased precision for fractional shares
+    purchase_price = models.DecimalField(max_digits=15, decimal_places=6)  # Ensure price is stored accurately
 
     def get_current_price(self):
         """Fetch the latest stock price using yfinance"""
         try:
             stock = yf.Ticker(self.ticker)
-            current_price = stock.history(period="1d")["Close"].iloc[-1]  # Get the latest closing price
-            return round(float(current_price), 2)  # Ensure it's a float and rounded to 2 decimals
+            current_price = stock.history(period="1d")["Close"].iloc[-1]
+            return Decimal(str(current_price)).quantize(Decimal("0.000001"))  # Maintain precision
         except Exception:
-            return float(self.purchase_price)  # Default to purchase price if API fails
+            return self.purchase_price  # Use purchase price if API fails
 
     def get_current_value(self):
         """Calculate current market value of this stock holding"""
-        return self.quantity * Decimal(self.get_current_price())
+        return self.quantity * self.get_current_price()

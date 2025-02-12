@@ -10,7 +10,7 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="p-4 bg-gray-700 rounded-lg">
             <h2 class="text-xl font-semibold">Current Price</h2>
-            <p class="text-green-400 text-2xl">${{ current_price }}</p>
+            <p class="text-green-400 text-2xl">€{{ current_price|floatformat:6 }}</p>
         </div>
         <div class="p-4 bg-gray-700 rounded-lg">
             <h2 class="text-xl font-semibold">Sector</h2>
@@ -31,6 +31,29 @@
         </details>
     </div>
     
+    <!-- Investing Form -->
+    <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+        <h2 class="text-xl font-semibold">Invest in {{ stock.name }}</h2>
+        <form method="POST" class="mt-4">
+            {% csrf_token %}
+            <label for="investment_amount" class="block text-sm font-medium text-white">
+                Investment Amount (€):
+            </label>
+            <input type="number" name="investment_amount" id="investment_amount" min="1" step="0.00001"
+                class="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-600"
+                required>
+            
+            <button type="submit" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+                Invest
+            </button>
+        </form>
+        
+        {% if error_message %}
+            <p class="text-red-500 mt-2">{{ error_message }}</p>
+        {% endif %}
+        
+    </div>
+
     <!-- Stock Chart -->
     <div class="mt-6">
         <h2 class="text-xl font-semibold">Stock Price History</h2>
