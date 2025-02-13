@@ -18,8 +18,8 @@
             <thead>
                 <tr class="bg-gray-700 text-white">
                     <th class="border border-gray-600 px-4 py-2">Stock</th>
-                    <th class="border border-gray-600 px-4 py-2">Ticker</th>
                     <th class="border border-gray-600 px-4 py-2">Shares</th>
+                    <th class="border border-gray-600 px-4 py-2">Purchase Price (€)</th>
                     <th class="border border-gray-600 px-4 py-2">Current Price (€)</th>
                     <th class="border border-gray-600 px-4 py-2">Total Value (€)</th>
                 </tr>
@@ -27,11 +27,11 @@
             <tbody>
                 {% for item in portfolio_items %}
                 <tr class="text-center text-gray-300">
-                    <td class="border border-gray-600 px-4 py-2">{{ item.stock_name }}</td>
                     <td class="border border-gray-600 px-4 py-2">{{ item.ticker }}</td>
                     <td class="border border-gray-600 px-4 py-2">{{ item.quantity }}</td>
-                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_price }}</td>
-                    <td class="border border-gray-600 px-4 py-2 font-semibold text-green-400">€{{ item.current_value }}</td>
+                    <td class="border border-gray-600 px-4 py-2">€{{ item.purchase_price }}</td>
+                    <th class="border border-gray-600 px-4 py-2">Blank for now</th>
+                    <th class="border border-gray-600 px-4 py-2">Blank for now</th>
                 </tr>
                 {% endfor %}
             </tbody>

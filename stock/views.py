@@ -24,14 +24,14 @@ def stock_detail(request, ticker):
 
         # Fetch stock data from Yahoo Finance
         stock = yf.Ticker(ticker)
-        stock_data = stock.history(period="1y")  # Last 1 year data
-
+        pe_ratio = stock.info.get("trailingPE")
+        
         # Get stock price in USD
-        current_price_usd = stock.history(period="1d")['Close'].iloc[0]
+        current_price_usd = stock.history(period="1d")['Close'].iloc[-1]
 
         # Get exchange rate for USD to EUR
         forex = yf.Ticker("EURUSD=X")  
-        exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[0]))
+        exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[-1]))
 
         # Convert USD price to EUR
         current_price_eur = Decimal(str(current_price_usd)) / exchange_rate
@@ -73,13 +73,15 @@ def stock_detail(request, ticker):
                     'stock_db': stock_db,
                     'ticker': ticker,
                     'current_price': current_price_eur,
+                    'pe_ratio': pe_ratio,
                     'error_message': str(e)
                 })
 
         return render(request, 'stock_detail.html', {
             'stock_db': stock_db,
             'ticker': ticker,
-            'current_price': current_price_eur
+            'current_price': current_price_eur,
+            'pe_ratio': pe_ratio,
         })
 
     except Exception as e:
@@ -98,7 +100,7 @@ def stock_data(request, ticker):
 
         # Fetch exchange rate for USD to EUR
         forex = yf.Ticker("EURUSD=X")
-        exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[0]))
+        exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[-1]))
 
         # Convert historical prices to EUR
         dates = stock_data.index.strftime('%Y-%m-%d').tolist()

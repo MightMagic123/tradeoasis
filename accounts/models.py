@@ -25,15 +25,14 @@ class PortfolioItem(models.Model):
     ticker = models.CharField(max_length=10)
     quantity = models.DecimalField(max_digits=15, decimal_places=6)  # Increased precision for fractional shares
     purchase_price = models.DecimalField(max_digits=15, decimal_places=6)  # Ensure price is stored accurately
-
+    
     def get_current_price(self):
         """Fetch the latest stock price using yfinance"""
-        try:
-            stock = yf.Ticker(self.ticker)
-            current_price = stock.history(period="1d")["Close"].iloc[-1]
-            return Decimal(str(current_price)).quantize(Decimal("0.000001"))  # Maintain precision
-        except Exception:
-            return self.purchase_price  # Use purchase price if API fails
+        stock = yf.Ticker(self.ticker)
+        forex = yf.Ticker("EURUSD=X")
+        exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[-1]))
+        current_price = Decimal(str(stock.history(period="1d")["Close"].iloc[-1])).quantize(Decimal("0.000001"))
+        return (current_price / exchange_rate).quantize(Decimal("0.00001")) # Maintain precision
 
     def get_current_value(self):
         """Calculate current market value of this stock holding"""

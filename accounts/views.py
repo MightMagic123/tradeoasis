@@ -4,8 +4,6 @@ from .forms import CustomUserCreationForm
 from django.urls import reverse
 import logging
 from .models import Portfolio
-from decimal import Decimal
-import yfinance as yf
 
 def accounts(request):
     user = request.user
@@ -25,9 +23,9 @@ def accounts(request):
         portfolio_items = []
     
     # Initialize total portfolio value
-    total_value = Decimal("0.00")
+    total_value = portfolio.get_total_value()
 
-    # Get exchange rate for USD to EUR
+    '''# Get exchange rate for USD to EUR
     forex = yf.Ticker("EURUSD=X")
     exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[0]))
 
@@ -40,10 +38,10 @@ def accounts(request):
 
         # Store updated price and calculate value
         item.current_price = current_price_eur
-        item.current_value = (item.quantity * current_price_eur).quantize(Decimal("0.01"))
+        item.current_value = (item.quantity * current_price_eur).quantize(Decimal("0.00001"))
 
         # Add to total portfolio value
-        total_value += item.current_value
+        total_value += item.current_value'''
 
 
 
@@ -53,8 +51,6 @@ def accounts(request):
         "portfolio_items": portfolio_items,
         "total_value": total_value,
     }
-
-    print(context)
     
     return render(request, "yourprofile.html", context)    
 

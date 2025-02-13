@@ -1,6 +1,4 @@
 import pandas as pd
-import yfinance as yf
-import requests
 
 # Function to get the list of S&P 500 tickers
 def get_sp500_tickers(names=False):
@@ -13,6 +11,8 @@ def get_sp500_tickers(names=False):
         return tickers, names_tickers
     return tickers
 
+#!ne korisitimo u kodu uopoce
+'''
 # Function to fetch stock data for each ticker using yfinance
 def get_stock_data(tickers):
     stock_data = {}
@@ -40,3 +40,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+'''
