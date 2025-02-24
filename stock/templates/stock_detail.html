@@ -1,10 +1,24 @@
 {% extends 'base_layout.html' %}
 
+{% block styles %}
+<style>
+    .hidden {
+        display: none;
+    }
+    .transition-transform {
+        transition: transform 0.3s ease-in-out;
+    }
+    .rotate-180 {
+        transform: rotate(180deg);
+    }
+</style>
+{% endblock %}
+
 {% block title %}Stock Details - {{ ticker }}{% endblock %}
 
 {% block content %}
 <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-    <h1 class="text-3xl font-bold text-green-400 mb-4">{{ stock_db.name }} ({{ ticker }})</h1>
+    <h1 class="text-3xl font-bold text-green-400 mb-4">{{ name }} ({{ ticker }})</h1>
     
     <!-- Stock Information -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -14,7 +28,7 @@
         </div>
         <div class="p-4 bg-gray-700 rounded-lg">
             <h2 class="text-xl font-semibold">Sector</h2>
-            <p class="text-green-400 text-2xl">{{ stock_db.sector }}</p>
+            <p class="text-green-400 text-2xl">{{ sector }}</p>
         </div>
         <div class="p-4 bg-gray-700 rounded-lg">
             <h2 class="text-xl font-semibold">P/E Ratio</h2>
@@ -22,33 +36,74 @@
         </div>
     </div>
 
-    <!-- Investing Form -->
+    <!-- Total Invested -->
     <div class="mt-6 p-4 bg-gray-700 rounded-lg">
-        <h2 class="text-xl font-semibold">Invest in {{ stock_db.name }}</h2>
-        <form method="POST" class="mt-4">
-            {% csrf_token %}
-            <label for="investment_amount" class="block text-sm font-medium text-white">
-                Investment Amount (€):
-            </label>
-            <input type="number" name="investment_amount" id="investment_amount" min="1" step="0.00001"
-                class="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-600"
-                required>
-            
-            <button type="submit" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
-                Invest
-            </button>
-        </form>
+        <h2 class="text-xl font-semibold">Total Invested in {{ name }}</h2>
+        <p class="text-green-400 text-2xl">€{{ total_invested|floatformat:6 }}</p>
+    </div>
+
+    <!-- Investing and Selling Forms -->
+    <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+        <h2 class="text-xl font-semibold">Invest or Sell {{ name }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Investing Form -->
+            <form method="POST" class="mt-4">
+                {% csrf_token %}
+                <label for="investment_amount" class="block text-sm font-medium text-white">
+                    Investment Amount (€):
+                </label>
+                <input type="number" name="investment_amount" id="investment_amount" min="1" step="0.00001"
+                    class="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-600"
+                    required>
+                <button type="submit" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+                    Invest
+                </button>
+            </form>
+
+            <!-- Selling Form -->
+            <div class="mt-4">
+                <form method="POST" id="sellForm">
+                    {% csrf_token %}
+                    <label for="sell_amount_eur" class="block text-sm font-medium text-white">
+                        Sell Amount (€):
+                    </label>
+                    <input type="number" name="sell_amount_eur" id="sell_amount_eur" min="1" step="0.00001"
+                        class="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-600">
+                    <div class="mt-4 flex space-x-4">
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                            Sell
+                        </button>
+                        <button type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" onclick="sellAll()">
+                            Sell All
+                        </button>
+                    </div>
+                    <input type="hidden" name="sell_all" id="sell_all" value="false">
+                </form>
+            </div>
+        </div>
         
         {% if error_message %}
             <p class="text-red-500 mt-2">{{ error_message }}</p>
         {% endif %}
-        
     </div>
 
     <!-- Stock Chart -->
     <div class="mt-6">
         <h2 class="text-xl font-semibold">Stock Price History</h2>
         <canvas id="stockChart" width="800" height="250" class="mt-4"></canvas>
+    </div>
+
+    <!-- Short Info -->
+    <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+        <h2 class="text-xl font-semibold cursor-pointer flex items-center" onclick="toggleInfo()">
+            Company Information
+            <svg id="toggleIcon" class="ml-2 w-5 h-5 transition-transform transform rotate-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </h2>
+        <div id="shortInfo" class="mt-4 hidden transition-all duration-300 ease-in-out">
+            <p class="text-gray-300">{{ short_info }}</p>
+        </div>
     </div>
 </div>
 
@@ -87,5 +142,18 @@
             })
             .catch(error => alert("Unable to load stock data: " + error.message));
     });
+
+    function toggleInfo() {
+        const infoDiv = document.getElementById('shortInfo');
+        const toggleIcon = document.getElementById('toggleIcon');
+        infoDiv.classList.toggle('hidden');
+        toggleIcon.classList.toggle('rotate-180');
+    }
+
+    function sellAll() {
+        document.getElementById('sell_amount_eur').value = '';
+        document.getElementById('sell_all').value = 'true';
+        document.getElementById('sellForm').submit();
+    }
 </script>
 {% endblock %}
