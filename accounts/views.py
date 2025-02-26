@@ -3,9 +3,6 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 from .forms import CustomUserCreationForm
 from django.urls import reverse
 import logging
-from .models import Portfolio, PortfolioItem
-from decimal import Decimal, ROUND_HALF_UP
-import yfinance as yf
 
 def accounts(request):
     user = request.user
