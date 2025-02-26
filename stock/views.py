@@ -6,6 +6,7 @@ from django.http import JsonResponse, HttpResponse
 from .models import Stock
 from accounts.models import Portfolio, PortfolioItem
 from decimal import Decimal, ROUND_HALF_UP
+from translate.translate import translate_to_croatian
 
 def stock_home(request):
     tickers, company_names = get_sp500_tickers(True)
@@ -23,8 +24,8 @@ def stock_detail(request, ticker):
         stock = yf.Ticker(ticker)
         name = stock.info.get("shortName", ticker)
         pe_ratio = stock.info.get("trailingPE")
-        sector = stock.info.get("sector", "Unknown")
-        short_info = stock.info.get("longBusinessSummary", "No description available.")
+        sector = translate_to_croatian(stock.info.get("sector", "sektor nesostupan"))
+        short_info = translate_to_croatian(stock.info.get("longBusinessSummary", "opis nedostupan"))
         
         # Get stock price in USD
         current_price_usd = stock.history(period="1d")['Close'].iloc[-1]

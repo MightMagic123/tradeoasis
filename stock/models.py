@@ -1,5 +1,5 @@
 from django.db import models
-
+""""Model is not used in this project"""
 class Stock(models.Model):
     name = models.CharField(max_length=255, unique=True)  # Stock name (e.g., Apple Inc.)
     ticker = models.CharField(max_length=10, unique=True)  # Stock symbol (e.g., AAPL)

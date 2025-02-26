@@ -18,6 +18,19 @@
       },
     };
   </script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+    main {
+      flex: 1;
+    }
+  </style>
 </head>
 <body class="bg-gray-900 text-gray-100">
 
@@ -30,12 +43,16 @@
   
     <!-- Centered Navigation -->
     <nav class="absolute left-1/2 transform -translate-x-1/2 flex space-x-6 text-lg">
-      <a href="/" class="text-white hover:bg-green-600 py-2 px-4 rounded">Home</a>
-      <a href="/stock" class="text-white hover:bg-green-600 py-2 px-4 rounded">Stocks</a>
-      <a href="/about" class="text-white hover:bg-green-600 py-2 px-4 rounded">About</a>
-      <a href="/accounts" class="text-white hover:bg-green-600 py-2 px-4 rounded">Profile</a>
-      <a href="/interest_calculator" class="text-white hover:bg-green-600 py-2 px-4 rounded">Interest Calculator</a>
-      <a href="/education" class="text-white hover:bg-green-600 py-2 px-4 rounded">Education</a>
+      <a href="/" class="text-white hover:bg-green-600 py-2 px-4 rounded">Početna</a>
+      {% if user.is_authenticated %}
+        <a href="/portfolio" class="text-white hover:bg-green-600 py-2 px-4 rounded">Portfolio</a>
+      {% endif %}
+      <a href="/stock" class="text-white hover:bg-green-600 py-2 px-4 rounded">Dionice</a>
+      <a href="/interest_calculator" class="text-white hover:bg-green-600 py-2 px-4 rounded">Kamatni Kalkulator</a>
+      <a href="/education" class="text-white hover:bg-green-600 py-2 px-4 rounded">Edukacija</a>
+      {% if user.is_authenticated and user.is_superuser %}
+        <a href="/accounts" class="text-white hover:bg-green-600 py-2 px-4 rounded">Račun</a>
+      {% endif %}
     </nav>
   
     <!-- User Menu (Right) -->
@@ -44,20 +61,18 @@
         <div class="mr-4 relative text-white hover:bg-green-700 py-2 px-4 rounded group">
           <a href="/accounts" class="text-white text-xl block">{{ user.username }}</a>
           <ul class="absolute right-0 bg-gray-800 w-36 mt-1 invisible group-hover:visible flex flex-col rounded-lg shadow-lg transition-all duration-300 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100">
-            <li><a href="#" class="block py-2 px-4 hover:bg-green-700 text-white">My Profile</a></li>
-            <li><a href="#" class="block py-2 px-4 hover:bg-green-700 text-white">My Preferences</a></li>
-            <li><a href="#" class="block py-2 px-4 hover:bg-green-700 text-white">Help</a></li>
+            <li><a href="/help" class="block py-2 px-4 hover:bg-green-700 text-white">Pomoć</a></li>
             <li>
               <form method="POST" action="{% url 'logout' %}">
                 {% csrf_token %}
-                <button type="submit" class="w-full text-left block py-2 px-4 hover:bg-red-600 text-white">Logout</button>
+                <button type="submit" class="w-full text-left block py-2 px-4 hover:bg-red-600 text-white">Odjava</button>
               </form>
             </li>
           </ul>
         </div>
       {% else %}
-        <a href="{% url 'login' %}" class="text-white hover:bg-green-700 py-2 px-4 rounded border border-white">Login</a>
-        <a href="{% url 'register' %}" class="bg-white text-green-800 hover:bg-green-100 py-2 px-6 rounded font-semibold">Get Started</a>
+        <a href="{% url 'login' %}" class="text-white hover:bg-green-700 py-2 px-4 rounded border border-white">Prijava</a>
+        <a href="{% url 'accounts' %}" class="bg-white text-green-800 hover:bg-green-100 py-2 px-6 rounded font-semibold">Započni danas</a>
       {% endif %}
     </div>
   </header>
@@ -73,7 +88,7 @@
   <!-- Footer -->
   <footer class="bg-green-800 text-white py-4 mt-8">
     <div class="container mx-auto text-center">
-      <p>&copy; 2025 TradeOasis. All rights reserved.</p>
+      <p>&copy; 2025 TradeOasis. Sva prava pridržana.</p>
     </div>
   </footer>
 </body>

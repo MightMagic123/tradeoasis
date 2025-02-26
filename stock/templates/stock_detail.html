@@ -14,7 +14,7 @@
 </style>
 {% endblock %}
 
-{% block title %}Stock Details - {{ ticker }}{% endblock %}
+{% block title %}Detalji dionice - {{ ticker }}{% endblock %}
 
 {% block content %}
 <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
@@ -23,40 +23,40 @@
     <!-- Stock Information -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="p-4 bg-gray-700 rounded-lg">
-            <h2 class="text-xl font-semibold">Current Price</h2>
+            <h2 class="text-xl font-semibold">Trenutačna cijena</h2>
             <p class="text-green-400 text-2xl">€{{ current_price|floatformat:6 }}</p>
         </div>
         <div class="p-4 bg-gray-700 rounded-lg">
-            <h2 class="text-xl font-semibold">Sector</h2>
+            <h2 class="text-xl font-semibold">Sektor</h2>
             <p class="text-green-400 text-2xl">{{ sector }}</p>
         </div>
         <div class="p-4 bg-gray-700 rounded-lg">
-            <h2 class="text-xl font-semibold">P/E Ratio</h2>
+            <h2 class="text-xl font-semibold">P/E omjer</h2>
             <p class="text-green-400 text-2xl">{{ pe_ratio }}</p>
         </div>
     </div>
 
     <!-- Total Invested -->
     <div class="mt-6 p-4 bg-gray-700 rounded-lg">
-        <h2 class="text-xl font-semibold">Total Invested in {{ name }}</h2>
+        <h2 class="text-xl font-semibold">Ukupno investirano u {{ name }}</h2>
         <p class="text-green-400 text-2xl">€{{ total_invested|floatformat:6 }}</p>
     </div>
 
     <!-- Investing and Selling Forms -->
     <div class="mt-6 p-4 bg-gray-700 rounded-lg">
-        <h2 class="text-xl font-semibold">Invest or Sell {{ name }}</h2>
+        <h2 class="text-xl font-semibold">Uloži ili prodaj {{ name }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Investing Form -->
             <form method="POST" class="mt-4">
                 {% csrf_token %}
                 <label for="investment_amount" class="block text-sm font-medium text-white">
-                    Investment Amount (€):
+                    Vrijednost uloga (€):
                 </label>
                 <input type="number" name="investment_amount" id="investment_amount" min="1" step="0.00001"
                     class="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-600"
                     required>
                 <button type="submit" class="mt-4 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
-                    Invest
+                    Uloži
                 </button>
             </form>
 
@@ -65,16 +65,16 @@
                 <form method="POST" id="sellForm">
                     {% csrf_token %}
                     <label for="sell_amount_eur" class="block text-sm font-medium text-white">
-                        Sell Amount (€):
+                        Vrijednost prodaje (€):
                     </label>
                     <input type="number" name="sell_amount_eur" id="sell_amount_eur" min="1" step="0.00001"
                         class="w-full p-2 rounded-md bg-gray-800 text-white border border-gray-600">
                     <div class="mt-4 flex space-x-4">
                         <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
-                            Sell
+                            Prodaj
                         </button>
                         <button type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" onclick="sellAll()">
-                            Sell All
+                            Prodaj sve
                         </button>
                     </div>
                     <input type="hidden" name="sell_all" id="sell_all" value="false">
@@ -89,14 +89,14 @@
 
     <!-- Stock Chart -->
     <div class="mt-6">
-        <h2 class="text-xl font-semibold">Stock Price History</h2>
+        <h2 class="text-xl font-semibold">Povijest cijena dionice</h2>
         <canvas id="stockChart" width="800" height="250" class="mt-4"></canvas>
     </div>
 
     <!-- Short Info -->
     <div class="mt-6 p-4 bg-gray-700 rounded-lg">
         <h2 class="text-xl font-semibold cursor-pointer flex items-center" onclick="toggleInfo()">
-            Company Information
+            Informacije o tvrtki (na engleskom)
             <svg id="toggleIcon" class="ml-2 w-5 h-5 transition-transform transform rotate-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>

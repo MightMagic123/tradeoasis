@@ -17,16 +17,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'tradeoasis'
 
 urlpatterns = [
     path('', views.home, name='home'),
     path("admin/", admin.site.urls),
-    path("about/", views.about),
+    path("portfolio/", views.portfolio, name="portfolio"),
     path("test/", views.testing),
     path('stock/', include('stock.urls')),
     path('accounts/', include('accounts.urls')),
     path('interest_calculator/', views.interest_calculator, name='interest_calculator'),
-    path('education/', views.education, name='education'),
+    path('education/', include('education.urls')),
+    path('help/', views.help, name='help'),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
