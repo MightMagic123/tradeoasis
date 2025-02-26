@@ -1,8 +1,6 @@
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 
 def translate_to_croatian(text):
-    translator = Translator()
-    translated = translator.translate(text, dest='hr')
-    return translated.text
+    translator = GoogleTranslator(source="en", target="hr")
+    return translator.translate(text)
 
-print(translate_to_croatian("Hello, how are you?"))  # Prints: "Bok, kako si?"

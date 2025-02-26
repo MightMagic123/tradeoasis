@@ -1,13 +1,12 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 import yfinance as yf
 from stock.stocks import get_sp500_tickers
-from django.http import JsonResponse, HttpResponse
-from .models import Stock
+from django.http import JsonResponse
 from accounts.models import Portfolio, PortfolioItem
 from decimal import Decimal, ROUND_HALF_UP
-#from translate.translate import translate_to_croatian
- 
+from translate.translate import translate_to_croatian
+
 def stock_home(request):
     tickers, company_names = get_sp500_tickers(True)
     ticker_company_pairs = zip(tickers, company_names)
@@ -16,7 +15,6 @@ def stock_home(request):
     }
     return render(request, 'stockhome.html', context)
 
-
 @login_required
 def stock_detail(request, ticker):
     try:
@@ -24,10 +22,8 @@ def stock_detail(request, ticker):
         stock = yf.Ticker(ticker)
         name = stock.info.get("shortName", ticker)
         pe_ratio = stock.info.get("trailingPE")
-        #sector = translate_to_croatian(stock.info.get("sector", "sektor nesostupan"))
-        #short_info = translate_to_croatian(stock.info.get("longBusinessSummary", "opis nedostupan"))
-        sector = stock.info.get("sector", "sektor nesostupan")
-        short_info = stock.info.get("longBusinessSummary", "opis nedostupan")
+        sector = translate_to_croatian(stock.info.get("sector", "sektor nesostupan"))
+        short_info = translate_to_croatian(stock.info.get("longBusinessSummary", "opis nedostupan"))
         
         # Get stock price in USD
         current_price_usd = stock.history(period="1d")['Close'].iloc[-1]
@@ -191,4 +187,3 @@ def stock_data(request, ticker):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-
