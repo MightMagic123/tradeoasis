@@ -17,10 +17,10 @@ def register(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             form.save() 
-            logging.info("User registered successfully.")
+            logging.info("Uspješna registracija.")
             return redirect(reverse('login'))
         else:
-            logging.warning("Form is not valid.")
+            logging.warning("Neispravan unos prilikom registracije.")
     else:
         form = CustomUserCreationForm()
     return render(request, 'register.html', {'form': form})
@@ -32,15 +32,15 @@ def login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             auth_login(request, user)
-            logging.info("User logged in successfully.")
+            logging.info("Uspješna prijava.")
             return redirect('accounts')
         else:
-            logging.warning("Invalid login credentials.")
-            return render(request, 'login.html', {'error': 'Invalid username or password'})
+            logging.warning("Pogreška prilikom prijave.")
+            return render(request, 'login.html', {'error': 'Netočno korisničko ime ili lozinka.'})
     return render(request, 'login.html')
 
 def logout(request):
     auth_logout(request)
-    logging.info("User logged out successfully.")
+    logging.info("Odjava uspješna.")
     return redirect('home')
 

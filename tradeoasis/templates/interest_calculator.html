@@ -53,7 +53,7 @@
         let contributionTotal = initial;
 
         for (let i = 0; i <= years; i++) {
-            labels.push(`Year ${i}`);
+            labels.push(`${i}. godina`);
             investmentData.push(balance.toFixed(2));
             contributionData.push(contributionTotal.toFixed(2));
 
@@ -62,7 +62,7 @@
             balance *= (1 + rate);
         }
 
-        document.getElementById("result").innerHTML = `Final Amount after ${years} years: €${investmentData[years]}`;
+        document.getElementById("result").innerHTML = `Vrijednost nakon ${years} godina: €${investmentData[years]}`;
 
         // Update Chart
         let ctx = document.getElementById("growthChart").getContext("2d");
@@ -73,14 +73,14 @@
                 labels: labels,
                 datasets: [
                     {
-                        label: "Investment Growth (€)",
+                        label: "Ukupna vrijednost (€)",
                         data: investmentData,
                         borderColor: "#16A34A",
                         backgroundColor: "rgba(22, 163, 74, 0.2)",
                         fill: true
                     },
                     {
-                        label: "Contributions Only (€)",
+                        label: "Vrijednost doprinosa (€)",
                         data: contributionData,
                         borderColor: "#DC2626", // Red
                         backgroundColor: "rgba(220, 38, 38, 0.2)",
