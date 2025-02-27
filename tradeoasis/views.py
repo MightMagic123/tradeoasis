@@ -63,4 +63,3 @@ def portfolio(request):
     }
     
     return render(request, "yourprofile.html", context)  
-

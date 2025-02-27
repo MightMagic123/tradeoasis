@@ -30,10 +30,10 @@
                     <td class="border border-gray-600 px-4 py-2">
                         <a href="{% url 'stock_detail' item.ticker %}" class="text-green-400 hover:underline">{{ item.ticker }}</a>
                     </td>
-                    <td class="border border-gray-600 px-4 py-2">{{ item.quantity|floatformat:2 }}</td>
-                    <td class="border border-gray-600 px-4 py-2">€{{ item.purchase_price|floatformat:2 }}</td>
-                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_price|floatformat:2 }}</td>
-                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_value|floatformat:2 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">{{ item.quantity|floatformat:5 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">€{{ item.purchase_price|floatformat:5 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_price|floatformat:5 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_value|floatformat:5 }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

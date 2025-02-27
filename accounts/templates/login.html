@@ -20,6 +20,9 @@
         {% if error %}
             <p class="text-red-500 mt-4">{{ error }}</p>
         {% endif %}
+        <div class="mt-4 text-center">
+            <a href="{% url 'password_reset' %}" class="text-primary hover:text-secondary">Zaboravili ste lozinku?</a>
+          </div>
     </form>
 </div>
 {% endblock %}
