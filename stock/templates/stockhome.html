@@ -23,7 +23,7 @@
         </tr>
       </thead>
       <tbody id="stock-table">
-        {% for ticker, company_name in ticker_company_pairs %}
+        {% for ticker, company_name in page_obj %}
           <tr class="hover:bg-green-600 transition duration-200">
             <td class="p-4 border-b border-green-500">
               <a href="/stock/{{ ticker }}" class="text-green-400 hover:text-yellow-400 font-semibold">{{ ticker }}</a>
@@ -34,6 +34,20 @@
       </tbody>
     </table>
   </div>
+  <div class="flex justify-center mt-6 space-x-2">
+    {% if page_obj.has_previous %}
+      <a href="?page=1" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Prva</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">⬅Prethodna</a>
+    {% endif %}
+  
+    <span class="px-4 py-2 bg-gray-800 text-white rounded-lg">Stranica {{ page_obj.number }} od {{ page_obj.paginator.num_pages }}</span>
+  
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Sljedeća</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Zadnja</a>
+    {% endif %}
+  </div>
+  
 </div>
 
 <!-- Live Search Filtering -->

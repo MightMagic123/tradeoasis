@@ -6,14 +6,17 @@ from django.http import JsonResponse
 from accounts.models import Portfolio, PortfolioItem
 from decimal import Decimal, ROUND_HALF_UP
 from translate.translate import translate_to_croatian
+from django.core.paginator import Paginator
 
 def stock_home(request):
     tickers, company_names = get_sp500_tickers(True)
-    ticker_company_pairs = zip(tickers, company_names)
-    context = {
-        'ticker_company_pairs': ticker_company_pairs
-    }
-    return render(request, 'stockhome.html', context)
+    ticker_company_pairs = list(zip(tickers, company_names))  # Convert zip to list for pagination
+
+    paginator = Paginator(ticker_company_pairs, 50)  # 50 stocks per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'stockhome.html', {'page_obj': page_obj})
 
 @login_required
 def stock_detail(request, ticker):

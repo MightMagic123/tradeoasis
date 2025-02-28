@@ -10,34 +10,3 @@ def get_sp500_tickers(names=False):
         names_tickers = sp500['Security'].tolist()
         return tickers, names_tickers
     return tickers
-
-#!ne korisitimo u kodu uopoce
-'''
-# Function to fetch stock data for each ticker using yfinance
-def get_stock_data(tickers):
-    stock_data = {}
-    for ticker in tickers:
-        try:
-            stock = yf.Ticker(ticker)
-            stock_data[ticker] = stock.history(period="1d")  # Fetch 1 day of stock data
-            print(f"Fetched data for {ticker}")
-        except Exception as e:
-            print(f"Could not fetch data for {ticker}: {e}")
-    return stock_data
-
-# Main execution
-def main():
-    print("Fetching S&P 500 stock tickers...")
-    tickers = get_sp500_tickers()
-    print(f"Found {len(tickers)} tickers in the S&P 500.")
-    
-    # Fetch stock data for each ticker (here we limit to first 20 tickers to avoid hitting API limits)
-    stock_data = get_stock_data(tickers[:20])  # Limit to first 20 to prevent rate limiting
-    
-    # Display a sample of the fetched data for the first 5 tickers
-    for ticker, data in stock_data.items():
-        print(f"\nData for {ticker}:\n", data.head())
-
-if __name__ == "__main__":
-    main()
-'''
