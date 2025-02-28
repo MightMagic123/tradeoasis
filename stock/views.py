@@ -11,11 +11,21 @@ from django.core.paginator import Paginator
 def stock_home(request):
     tickers, company_names = get_sp500_tickers(True)
     ticker_company_pairs = list(zip(tickers, company_names))  # Convert zip to list for pagination
-
+    
+    # Handle search functionality
+    search_query = request.GET.get('search', '')
+    if search_query:
+        # Filter the ticker_company_pairs based on search query
+        ticker_company_pairs = [
+            (ticker, company) for ticker, company in ticker_company_pairs
+            if search_query.lower() in ticker.lower() or search_query.lower() in company.lower()
+        ]
+    
+    # Paginate results
     paginator = Paginator(ticker_company_pairs, 50)  # 50 stocks per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
+    
     return render(request, 'stockhome.html', {'page_obj': page_obj})
 
 @login_required
