@@ -37,7 +37,7 @@
   <div class="flex justify-center mt-6 space-x-2">
     {% if page_obj.has_previous %}
       <a href="?page=1" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Prva</a>
-      <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">⬅Prethodna</a>
+      <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Prethodna</a>
     {% endif %}
   
     <span class="px-4 py-2 bg-gray-800 text-white rounded-lg">Stranica {{ page_obj.number }} od {{ page_obj.paginator.num_pages }}</span>
