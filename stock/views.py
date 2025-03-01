@@ -53,9 +53,11 @@ def stock_detail(request, ticker):
         try:
             portfolio_item = PortfolioItem.objects.get(portfolio=portfolio, ticker=ticker)
             total_invested = (portfolio_item.quantity * portfolio_item.purchase_price).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+            total_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
         except PortfolioItem.DoesNotExist:
             portfolio_item = None
             total_invested = Decimal("0.00")
+            total_value = Decimal("0.00")
 
         # Handle investment form submission
         if request.method == "POST":
@@ -69,11 +71,11 @@ def stock_detail(request, ticker):
                 if investment_amount:
                     investment_amount = Decimal(investment_amount).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)  # Convert input to Decimal and round to 2 decimal places
                     if investment_amount <= 0:
-                        raise ValueError("Investment amount must be greater than zero.")
+                        raise ValueError("Vrijednost investicije mora biti veća od 0.")
 
                     # Check if the user has enough balance
                     if investment_amount > portfolio.cash_balance:
-                        raise ValueError("Insufficient balance to make this investment.")
+                        raise ValueError("Nedovoljno sredstava na računu.")
 
                     # Calculate number of shares
                     quantity = (investment_amount / current_price_eur).quantize(Decimal("0.00001"), rounding=ROUND_HALF_UP)  # Allow up to 5 decimal places
@@ -103,7 +105,7 @@ def stock_detail(request, ticker):
                 elif sell_amount_eur:
                     sell_amount_eur = Decimal(sell_amount_eur).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)  # Convert input to Decimal and round to 2 decimal places
                     if sell_amount_eur <= 0:
-                        raise ValueError("Sell amount must be greater than zero.")
+                        raise ValueError("Prodaja mora biti veća od 0.")
 
                     # Find the portfolio item
                     portfolio_item = PortfolioItem.objects.get(portfolio=portfolio, ticker=ticker)
@@ -113,7 +115,7 @@ def stock_detail(request, ticker):
 
                     # Check if the user has enough shares to sell
                     if sell_quantity > portfolio_item.quantity:
-                        raise ValueError("Insufficient shares to sell.")
+                        raise ValueError("Nedovoljno dionica za prodaju.")
 
                     # Calculate the amount to be credited to cash balance
                     sell_value = (sell_quantity * current_price_eur).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
@@ -154,6 +156,7 @@ def stock_detail(request, ticker):
                     'sector': sector,
                     'total_invested': total_invested,
                     'short_info': short_info,
+                    'total_value': total_value,
                     'error_message': str(e)
                 })
 
@@ -165,6 +168,7 @@ def stock_detail(request, ticker):
             'sector': sector,
             'total_invested': total_invested,
             'short_info': short_info,
+            'total_value': total_value
         })
 
     except Exception as e:
