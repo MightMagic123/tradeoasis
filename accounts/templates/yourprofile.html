@@ -8,7 +8,7 @@
     
     <div class="mb-6">
         <h3 class="text-xl font-semibold text-white">Raspoloživa sredstva</h3>
-        <p class="text-lg text-green-300">€{{ portfolio.cash_balance|floatformat:2 }}</p>
+        <p class="text-lg text-green-300">€{{ portfolio.cash_balance|floatformat:6 }}</p>
     </div>
     
     <div>
@@ -22,6 +22,7 @@
                     <th class="border border-gray-600 px-4 py-2">Kupovna cijena (€)</th>
                     <th class="border border-gray-600 px-4 py-2">Trenutna cijena (€)</th>
                     <th class="border border-gray-600 px-4 py-2">Ukupna vrijednost (€)</th>
+                    <th class="border border-gray-600 px-4 py-2">Profit (%)</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,10 +31,20 @@
                     <td class="border border-gray-600 px-4 py-2">
                         <a href="{% url 'stock_detail' item.ticker %}" class="text-green-400 hover:underline">{{ item.ticker }}</a>
                     </td>
-                    <td class="border border-gray-600 px-4 py-2">{{ item.quantity|floatformat:5 }}</td>
-                    <td class="border border-gray-600 px-4 py-2">€{{ item.purchase_price|floatformat:5 }}</td>
-                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_price|floatformat:5 }}</td>
-                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_value|floatformat:5 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">{{ item.quantity|floatformat:6 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">€{{ item.purchase_price|floatformat:6 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_price|floatformat:6 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">€{{ item.current_value|floatformat:6 }}</td>
+                    <td class="border border-gray-600 px-4 py-2">
+                        {% if item.profitpercentage > 0 %}
+                            <span class="text-green-300">{{ item.profitpercentage|floatformat:6 }}%</span>
+                        {% elif item.profitpercentage < 0 %}
+                            <span class="text-red-400">{{ item.profitpercentage|floatformat:6 }}%</span>
+                        {% else %}
+                            <span class="text-white">{{ item.profitpercentage|floatformat:6 }}%</span>
+                        {% endif %}
+                    </td>
+                    
                 </tr>
                 {% endfor %}
             </tbody>
@@ -46,11 +57,11 @@
     <div class="mt-6 flex justify-between">
         <div>
             <h3 class="text-xl font-semibold text-white">Ukupna vrijednost dionica</h3>
-            <p class="text-2xl text-green-400 font-bold">€{{ total_value|floatformat:2 }}</p>
+            <p class="text-2xl text-green-400 font-bold">€{{ total_value|floatformat:6 }}</p>
         </div>
         <div>
             <h3 class="text-xl font-semibold text-white">Ukupna vrijednost portfolia</h3>
-            <p class="text-2xl text-green-400 font-bold">€{{ portfolio_value|floatformat:2 }}</p>
+            <p class="text-2xl text-green-400 font-bold">€{{ portfolio_value|floatformat:6 }}</p>
         </div>
     </div>
 </div>

@@ -14,7 +14,7 @@ from django.urls import reverse_lazy
 def accounts(request):
     user = request.user
     if user.is_authenticated:
-        return redirect("portfolio")  # Redirect to the login page instead of rendering "accounts.html"
+        return redirect("portfolio")
    
     return render(request, "accounts.html")    
 

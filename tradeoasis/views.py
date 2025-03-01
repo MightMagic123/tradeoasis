@@ -45,12 +45,12 @@ def portfolio(request):
     for item in portfolio_items:
         stock = yf.Ticker(item.ticker)
         current_price_usd = stock.history(period="1d")['Close'].iloc[0]
-        current_price_eur = (Decimal(str(current_price_usd)) / exchange_rate).quantize(Decimal("0.00001"), rounding=ROUND_HALF_UP)  # Convert to EUR
+        current_price_eur = (Decimal(str(current_price_usd)) / exchange_rate).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)  # Convert to EUR
 
         # Store updated price and calculate value
         item.current_price = current_price_eur
-        item.current_value = (item.quantity * current_price_eur).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)  # Round to 2 decimal places
-
+        item.current_value = (item.quantity * current_price_eur).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
+        item.profitpercentage = (item.current_price-item.purchase_price)/item.purchase_price*100
         # Add to total portfolio value
         total_value += item.current_value
 
@@ -59,7 +59,7 @@ def portfolio(request):
         "portfolio": portfolio,
         "portfolio_items": portfolio_items,
         "total_value": total_value,
-        "portfolio_value": (Decimal(portfolio.cash_balance) + total_value).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)  # Round to 2 decimal places
+        "portfolio_value": (Decimal(portfolio.cash_balance) + total_value).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
     }
     
     return render(request, "yourprofile.html", context)  
