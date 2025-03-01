@@ -31,18 +31,20 @@
 
   <!-- Rest of the template remains the same -->
   <!-- Search Form -->
-  <form method="GET" action="" class="mb-6">
-    <div class="relative">
+  <form method="GET" action="" class="mb-6 flex items-center space-x-2">
+    <div class="relative flex-grow">
       <input type="text" id="search" name="search" placeholder="Pretraži dionice..."
         class="w-full p-3 pl-10 text-lg border border-green-500 bg-gray-800 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
         value="{{ request.GET.search|default:'' }}">
       <span class="absolute left-3 top-3 text-green-400">🔍</span>
-      <button type="submit" class="absolute right-3 top-3 bg-green-500 text-white px-4 py-1 rounded-lg hover:bg-green-700">
-        Pretraži
-      </button>
     </div>
+    <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-green-400 hover:text-black transition">
+      Pretraži
+    </button>
+    <button type="button" id="reset-search" class="bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-red-400 hover:text-black transition">
+      Reset
+    </button>
   </form>
-   
   <!-- Stock Table -->
   <div class="overflow-hidden rounded-lg shadow-lg">
     <table class="w-full border border-green-500 text-white">
@@ -64,31 +66,40 @@
       </tbody>
     </table>
   </div>
- 
+  
+  <!-- Google-Style Pagination (Dark Mode) -->
   <div class="flex justify-center mt-6 space-x-2">
     {% if page_obj.has_previous %}
-      <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Prva</a>
-      <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Prethodna</a>
+      <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" 
+         class="px-3 py-2 bg-gray-800 text-white rounded-lg hover:bg-green-400 hover:text-black transition">Prva</a>
+      <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" 
+         class="px-3 py-2 bg-gray-800 text-white rounded-lg hover:bg-green-400 hover:text-black transition">«</a>
     {% endif %}
- 
-    <span class="px-4 py-2 bg-gray-800 text-white rounded-lg">Stranica {{ page_obj.number }} od {{ page_obj.paginator.num_pages }}</span>
- 
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if num >= page_obj.number|add:-5 and num <= page_obj.number|add:5 %}
+        <a href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+           class="px-3 py-2 {% if num == page_obj.number %}bg-yellow-400 text-black{% else %}bg-gray-800 text-white hover:bg-green-400 hover:text-black{% endif %} rounded-lg transition">
+          {{ num }}
+        </a>
+      {% endif %}
+    {% endfor %}
+
     {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Sljedeća</a>
-      <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-700">Zadnja</a>
+      <a href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" 
+         class="px-3 py-2 bg-gray-800 text-white rounded-lg hover:bg-green-400 hover:text-black transition">»</a>
+      <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}" 
+         class="px-3 py-2 bg-gray-800 text-white rounded-lg hover:bg-green-400 hover:text-black transition">Zadnja</a>
     {% endif %}
   </div>
- 
+
 </div>
-<!-- Live Quick Filtering (Client-side) -->
+
+<!-- JavaScript -->
 <script>
-  document.getElementById('quick-filter').addEventListener('input', function() {
-    var filterValue = this.value.toLowerCase();
-    document.querySelectorAll('#stock-table tr').forEach(row => {
-      var ticker = row.children[0].textContent.toLowerCase();
-      var companyName = row.children[1].textContent.toLowerCase();
-      row.style.display = (ticker.includes(filterValue) || companyName.includes(filterValue)) ? '' : 'none';
-    });
+  document.getElementById('reset-search').addEventListener('click', function() {
+    window.location.href = window.location.pathname; // Reloads the page without search query
   });
 </script>
+
 {% endblock %}
