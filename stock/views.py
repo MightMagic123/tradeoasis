@@ -7,11 +7,36 @@ from accounts.models import Portfolio, PortfolioItem
 from decimal import Decimal, ROUND_HALF_UP
 from translate.translate import translate_to_croatian
 from django.core.paginator import Paginator
+from django.contrib import messages
 
 def stock_home(request):
+    # Check if a custom ticker was submitted
+    custom_ticker = request.GET.get('ticker')
+    if custom_ticker:
+        # Validate if the ticker exists before redirecting
+        ticker_symbol = custom_ticker.upper().strip()
+        try:
+            # Try to get basic info about the ticker using yfinance
+            ticker_data = yf.Ticker(ticker_symbol)
+            
+            # Check if valid by attempting to get info
+            info = ticker_data.info
+            
+            # If the ticker doesn't exist, yfinance typically returns an empty dict or one with minimal data
+            if not info or "symbol" not in info:
+                raise ValueError("Invalid ticker symbol")
+                
+            # If we got here, the ticker is valid, redirect to its page
+            return redirect(f'/stock/{ticker_symbol}')
+            
+        except Exception as e:
+            # Ticker doesn't exist or there was an error fetching data
+            messages.error(request, f"Dionica s oznakom '{ticker_symbol}' nije pronađena. Molimo provjerite oznaku i pokušajte ponovno.")
+    
+    # Normal stock listing flow
     tickers, company_names = get_sp500_tickers(True)
     ticker_company_pairs = list(zip(tickers, company_names))  # Convert zip to list for pagination
-    
+   
     # Handle search functionality
     search_query = request.GET.get('search', '')
     if search_query:
@@ -20,12 +45,12 @@ def stock_home(request):
             (ticker, company) for ticker, company in ticker_company_pairs
             if search_query.lower() in ticker.lower() or search_query.lower() in company.lower()
         ]
-    
+   
     # Paginate results
     paginator = Paginator(ticker_company_pairs, 50)  # 50 stocks per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+   
     return render(request, 'stockhome.html', {'page_obj': page_obj})
 
 @login_required
