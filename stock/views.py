@@ -71,18 +71,18 @@ def stock_detail(request, ticker):
         exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[-1]))
 
         # Convert USD price to EUR
-        current_price_eur = (Decimal(str(current_price_usd)) / exchange_rate).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
+        current_price_eur = (Decimal(str(current_price_usd)) / exchange_rate).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
 
         # Calculate total amount invested in the specific stock
         portfolio = Portfolio.objects.get(user=request.user)
         try:
             portfolio_item = PortfolioItem.objects.get(portfolio=portfolio, ticker=ticker)
-            total_invested = (portfolio_item.quantity * portfolio_item.purchase_price).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
-            total_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
+            total_invested = (portfolio_item.quantity * portfolio_item.purchase_price).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
+            total_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
         except PortfolioItem.DoesNotExist:
             portfolio_item = None
-            total_invested = Decimal("0.000000")
-            total_value = Decimal("0.000000")
+            total_invested = Decimal("0.0000000")
+            total_value = Decimal("0.0000000")
 
         # Handle investment form submission
         if request.method == "POST":
@@ -94,7 +94,7 @@ def stock_detail(request, ticker):
                 portfolio, created = Portfolio.objects.get_or_create(user=request.user)
 
                 if investment_amount:
-                    investment_amount = Decimal(investment_amount).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)  # Convert input to Decimal and round to 2 decimal places
+                    investment_amount = Decimal(investment_amount).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
                     if investment_amount <= 0:
                         raise ValueError("Vrijednost investicije mora biti veća od 0.")
 
@@ -103,9 +103,10 @@ def stock_detail(request, ticker):
                         raise ValueError("Nedovoljno sredstava na računu.")
 
                     # Calculate number of shares
-                    quantity = (investment_amount / current_price_eur).quantize(Decimal("0.00001"), rounding=ROUND_HALF_UP)  # Allow up to 5 decimal places
+                    quantity = (investment_amount / current_price_eur).quantize(Decimal("0.000000001"), rounding=ROUND_HALF_UP)
 
                     # Deduct investment amount from cash balance
+
                     portfolio.cash_balance -= investment_amount
                     portfolio.save()
 
@@ -116,7 +117,7 @@ def stock_detail(request, ticker):
 
                         # Update the existing portfolio item
                         portfolio_item.quantity = total_quantity
-                        portfolio_item.purchase_price = weighted_average_price.quantize(Decimal("0.00001"), rounding=ROUND_HALF_UP)
+                        portfolio_item.purchase_price = weighted_average_price.quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
                         portfolio_item.save()
                     else:
                         # Add new stock to portfolio
@@ -128,7 +129,7 @@ def stock_detail(request, ticker):
                         )
 
                 elif sell_amount_eur:
-                    sell_amount_eur = Decimal(sell_amount_eur).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)  # Convert input to Decimal and round to 2 decimal places
+                    sell_amount_eur = Decimal(sell_amount_eur).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
                     if sell_amount_eur <= 0:
                         raise ValueError("Prodaja mora biti veća od 0.")
 
@@ -139,14 +140,14 @@ def stock_detail(request, ticker):
                         raise ValueError("Nedovoljno dionica za prodaju.")
 
                     # Calculate the number of shares to sell
-                    sell_quantity = (sell_amount_eur / current_price_eur).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
+                    sell_quantity = (sell_amount_eur / current_price_eur).quantize(Decimal("0.000000001"), rounding=ROUND_HALF_UP)
 
                     # Check if the user has enough shares to sell
                     if sell_quantity > portfolio_item.quantity:
                         raise ValueError("Nedovoljno dionica za prodaju.")
 
                     # Calculate the amount to be credited to cash balance
-                    sell_value = (sell_quantity * current_price_eur).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
+                    sell_value = (sell_quantity * current_price_eur).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
 
                     # Update portfolio item quantity
                     portfolio_item.quantity -= sell_quantity
@@ -164,7 +165,7 @@ def stock_detail(request, ticker):
                     portfolio_item = PortfolioItem.objects.get(portfolio=portfolio, ticker=ticker)
 
                     # Calculate the amount to be credited to cash balance
-                    sell_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.000001"), rounding=ROUND_HALF_UP)
+                    sell_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
 
                     # Delete the portfolio item
                     portfolio_item.delete()
