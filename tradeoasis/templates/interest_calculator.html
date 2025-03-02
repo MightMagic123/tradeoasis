@@ -42,11 +42,17 @@
 <!-- Chart.js & Calculation Script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    function getParsedValue(id) {
+        let inputElement = document.getElementById(id);
+        let parsedValue = parseFloat(inputElement.value.replace(",", "."));
+        return isNaN(parsedValue) ? parseFloat(inputElement.placeholder) : parsedValue;
+    }
+    
     function calculateGrowth() {
         // Use placeholders as default values if input is empty
-        let initial = parseFloat(document.getElementById("initial").value.replace(",", ".")) || parseFloat(document.getElementById("initial").placeholder);
-        let rate = (parseFloat(document.getElementById("rate").value.replace(",", ".")) || parseFloat(document.getElementById("rate").placeholder)) / 100;
-        let monthly = parseFloat(document.getElementById("monthly").value.replace(",", ".")) || parseFloat(document.getElementById("monthly").placeholder);
+        let initial = getParsedValue("initial");
+        let rate = getParsedValue("rate") / 100;
+        let monthly = getParsedValue("monthly");
         let years = 30;
 
         let labels = [];
