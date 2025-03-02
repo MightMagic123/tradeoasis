@@ -8,7 +8,7 @@ class Lesson(models.Model):
     slug = models.SlugField(unique=True, blank=True)  # Auto slug field
     body = models.TextField()
     created_at = models.DateTimeField(default=now)  # Auto date of creation
-    thumbnail = models.ImageField(default='tradeoasis.jpg', blank=False)
+    thumbnail = models.ImageField(default='logo.png', blank=False)
 
     def __str__(self):
         return self.title
