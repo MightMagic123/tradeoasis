@@ -70,7 +70,7 @@ def stock_detail(request, ticker):
         try:
             portfolio_item = PortfolioItem.objects.get(portfolio=portfolio, ticker=ticker)
             total_invested = (portfolio_item.quantity * portfolio_item.purchase_price).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
-            total_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)#!
+            total_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
         except PortfolioItem.DoesNotExist:
             portfolio_item = None
             total_invested = Decimal("0.0000000")
@@ -189,19 +189,39 @@ def stock_detail(request, ticker):
             'sector': sector,
             'total_invested': total_invested,
             'short_info': short_info,
-            'total_value': total_value#!
+            'total_value': total_value
         })
 
     except Exception as e:
         return render(request, 'error.html', {'message': str(e)})
 
-
+    
 def stock_data(request, ticker):
     try:
+        # Get the period from the request (default to 6mo if not provided)
+        period = request.GET.get('period', '6mo')
+        
+        # Validate period
+        valid_periods = ['1d', '5d', '1mo', '3mo', '6mo', '1y', '2y']
+        if period not in valid_periods:
+            period = '6mo'  # Default to 6 months if invalid
+        
+        interval = '1d'  # Default to daily
+        if period == '1d':
+            interval = '5m'
+        elif period == '5d':
+            interval = '15m'
+        elif period == '1mo':
+            interval = '1h'
+        elif period in ['3mo', '6mo', '1y']:
+            interval = '1d'
+        elif period == '2y':
+            interval = '5d'
+        
         # Fetch historical stock data
         stock = yf.Ticker(ticker)
-        stock_data = stock.history(period="6mo")  # Fetch last 6 months of data
-
+        stock_data = stock.history(period=period, interval=interval)
+        
         # Ensure data exists
         if stock_data.empty:
             return JsonResponse({'error': f"No data available for ticker '{ticker}'."}, status=404)
@@ -211,7 +231,14 @@ def stock_data(request, ticker):
         exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[-1]))
 
         # Convert historical prices to EUR
-        dates = stock_data.index.strftime('%Y-%m-%d').tolist()
+        # Use different datetime format based on period
+        if period in ['1d', '5d', '1mo']:
+            # For shorter periods, include precise timestamp
+            dates = stock_data.index.strftime('%Y-%m-%d %H:%M:%S').tolist()
+        else:
+            # For longer periods, just use the date
+            dates = stock_data.index.strftime('%Y-%m-%d').tolist()
+            
         close_prices_usd = [Decimal(str(price)) for price in stock_data['Close'].tolist()]
         close_prices_eur = [(price / exchange_rate).quantize(Decimal("0.000001")) for price in close_prices_usd]
 
@@ -219,6 +246,7 @@ def stock_data(request, ticker):
         chart_data = {
             'dates': dates,
             'close_prices': close_prices_eur,  # Prices now in EUR
+            'period': period  # Include period in response for client-side reference
         }
 
         return JsonResponse(chart_data)
