@@ -10,29 +10,6 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 
 def stock_home(request):
-    # Check if a custom ticker was submitted
-    custom_ticker = request.GET.get('ticker')
-    if custom_ticker:
-        # Validate if the ticker exists before redirecting
-        ticker_symbol = custom_ticker.upper().strip()
-        try:
-            # Try to get basic info about the ticker using yfinance
-            ticker_data = yf.Ticker(ticker_symbol)
-            
-            # Check if valid by attempting to get info
-            info = ticker_data.info
-            
-            # If the ticker doesn't exist, yfinance typically returns an empty dict or one with minimal data
-            if not info or "symbol" not in info:
-                raise ValueError("Invalid ticker symbol")
-                
-            # If we got here, the ticker is valid, redirect to its page
-            return redirect(f'/stock/{ticker_symbol}')
-            
-        except Exception as e:
-            # Ticker doesn't exist or there was an error fetching data
-            messages.error(request, f"Dionica s oznakom '{ticker_symbol}' nije pronađena. Molimo provjerite oznaku i pokušajte ponovno.")
-    
     # Normal stock listing flow
     tickers, company_names = get_sp500_tickers(True)
     ticker_company_pairs = list(zip(tickers, company_names))  # Convert zip to list for pagination
@@ -45,6 +22,14 @@ def stock_home(request):
             (ticker, company) for ticker, company in ticker_company_pairs
             if search_query.lower() in ticker.lower() or search_query.lower() in company.lower()
         ]
+        # Additionally, search for stocks not registered in the app using yfinance
+        try:
+            ticker_data = yf.Ticker(search_query.upper().strip())
+            info = ticker_data.info
+            if info and "symbol" in info and info.get("shortName", "Unknown Company") != "Unknown Company":
+                ticker_company_pairs.append((info["symbol"], info.get("shortName", "Unknown Company")))
+        except Exception as e:
+            pass
    
     # Paginate results
     paginator = Paginator(ticker_company_pairs, 50)  # 50 stocks per page
@@ -58,10 +43,16 @@ def stock_detail(request, ticker):
     try:
         # Fetch stock data from Yahoo Finance
         stock = yf.Ticker(ticker)
-        name = stock.info.get("shortName", ticker)
-        pe_ratio = stock.info.get("trailingPE")
-        sector = translate_to_croatian(stock.info.get("sector", "sektor nesostupan"))
-        short_info = translate_to_croatian(stock.info.get("longBusinessSummary", "opis nedostupan"))
+        info = stock.info
+        
+        # Check if the stock data is valid
+        if not info or "symbol" not in info:
+            raise ValueError(f"Stock with ticker '{ticker}' not found.")
+        
+        name = info.get("shortName", ticker)
+        pe_ratio = info.get("trailingPE")
+        sector = translate_to_croatian(info.get("sector", "sektor nesostupan"))
+        short_info = translate_to_croatian(info.get("longBusinessSummary", "opis nedostupan"))
         
         # Get stock price in USD
         current_price_usd = stock.history(period="1d")['Close'].iloc[-1]

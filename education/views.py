@@ -8,6 +8,12 @@ def education(request):
     lessons = Lesson.objects.all()
     return render(request, 'education.html', {'lessons': lessons})
 
+def compound_interest(request):
+    return render(request, 'compound_interest.html')
+
+def snp500(request):
+    return render(request, 'snp500.html')
+
 @user_passes_test(lambda u: u.is_superuser)
 def create_lesson(request):
     if request.method == 'POST':
