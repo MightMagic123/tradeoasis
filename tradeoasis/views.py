@@ -47,16 +47,16 @@ def portfolio(request):
         portfolio_items = []
     
     # Initialize total portfolio value
-    total_value = Decimal("0.00")
+    total_value = Decimal("0.0000000")
 
     # Get exchange rate for USD to EUR
     forex = yf.Ticker("EURUSD=X")
-    exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[0]))
+    exchange_rate = Decimal(str(forex.history(period="1d")['Close'].iloc[-1]))
 
     # Update stock prices and calculate total portfolio value
     for item in portfolio_items:
         stock = yf.Ticker(item.ticker)
-        current_price_usd = stock.history(period="1d")['Close'].iloc[0]
+        current_price_usd = stock.history(period="1d")['Close'].iloc[-1]
         current_price_eur = (Decimal(str(current_price_usd)) / exchange_rate).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)  # Convert to EUR
 
         # Store updated price and calculate value

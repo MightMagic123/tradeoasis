@@ -70,7 +70,7 @@ def stock_detail(request, ticker):
         try:
             portfolio_item = PortfolioItem.objects.get(portfolio=portfolio, ticker=ticker)
             total_invested = (portfolio_item.quantity * portfolio_item.purchase_price).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
-            total_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
+            total_value = (portfolio_item.quantity * current_price_eur).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)#!
         except PortfolioItem.DoesNotExist:
             portfolio_item = None
             total_invested = Decimal("0.0000000")
@@ -189,7 +189,7 @@ def stock_detail(request, ticker):
             'sector': sector,
             'total_invested': total_invested,
             'short_info': short_info,
-            'total_value': total_value
+            'total_value': total_value#!
         })
 
     except Exception as e:
