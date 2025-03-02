@@ -27,7 +27,8 @@ def stock_home(request):
             ticker_data = yf.Ticker(search_query.upper().strip())
             info = ticker_data.info
             if info and "symbol" in info and info.get("shortName", "Unknown Company") != "Unknown Company":
-                ticker_company_pairs.append((info["symbol"], info.get("shortName", "Unknown Company")))
+                if info["symbol"] not in tickers:
+                    ticker_company_pairs.append((info["symbol"], info.get("shortName", "Unknown Company")))
         except Exception as e:
             pass
    

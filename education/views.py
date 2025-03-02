@@ -4,7 +4,6 @@ from django.contrib import messages
 from .models import Lesson
 from .forms import LessonForm
 
-# Create your views here.
 def education(request):
     lessons = Lesson.objects.all()
     return render(request, 'education.html', {'lessons': lessons})

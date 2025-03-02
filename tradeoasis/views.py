@@ -2,7 +2,6 @@ from django.shortcuts import render
 import yfinance as yf
 from accounts.models import Portfolio
 from decimal import Decimal, ROUND_HALF_UP
-from datetime import datetime, timedelta
 
 def testing(request):
     return render(request, 'test.html')
