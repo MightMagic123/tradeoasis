@@ -66,15 +66,12 @@ def portfolio(request):
         # Add to total portfolio value
         total_value += item.current_value
 
-    total_invested = 10000 - portfolio.cash_balance
-
     context = {
         "user": user,
         "portfolio": portfolio,
         "portfolio_items": portfolio_items,
         "total_value": total_value,
         "portfolio_value": (Decimal(portfolio.cash_balance) + total_value).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP),
-        "total_invested": total_invested
     }
     
     return render(request, "yourprofile.html", context)
