@@ -61,10 +61,10 @@
         <div class="flex items-center">
           <!-- Account Balance Display -->
           {% if user_balance %}
-            <div class="mr-4 bg-green-900 rounded-lg px-3 py-1 border border-green-600">
-              <span class="text-sm text-green-200">Stanje:</span>
-              <span class="text-lg font-bold text-green-300">€{{ user_balance|floatformat:2 }}</span>
-            </div>
+          <div class="mr-4 bg-green-700 rounded-md px-3 py-1.5 border border-green-600 flex items-center">
+            <span class="text-sm text-green-100 mr-1.5">Stanje:</span>
+            <span class="font-bold text-white">€{{ user_balance|floatformat:2 }}</span>
+          </div>
           {% endif %}
           
           <!-- User Dropdown -->

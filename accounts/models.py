@@ -4,6 +4,7 @@ import yfinance as yf
 from decimal import Decimal
 
 class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
     def __str__(self):
         return self.username
 
