@@ -9,7 +9,7 @@ Matej Toth - matej.toth021@gmail.com
 
 Naš cilj
 
-Naš cilj je povećati broj hrvata koji su iskusni u investiranju. Da bi ekonomija prosperirala, ljudi moraju znati kako pametno iskoristiti svoj novac. Ako zainteresiramo ljude za ulaganje u dionice, možda se odluče na kupovanje dionica na hrvatskoj (zagrebačkoj) burzi i tako potaknu razvoj domaćeg gospodarstva.
+Naš cilj je povećati broj Hrvata koji su iskusni u investiranju. Da bi ekonomija prosperirala, ljudi moraju znati kako pametno iskoristiti svoj novac. Ako zainteresiramo ljude za ulaganje u dionice, možda se odluče na kupovanje dionica na hrvatskoj (zagrebačkoj) burzi i tako potaknu razvoj domaćeg gospodarstva.
 
 O projektu
 
