@@ -72,6 +72,7 @@
             <a href="/accounts" class="text-white text-xl block">{{ user.username }}</a>
             <ul class="absolute right-0 bg-gray-800 w-36 mt-1 invisible group-hover:visible flex flex-col rounded-lg shadow-lg transition-all duration-300 opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 z-10">
               <li><a href="/portfolio" class="block py-2 px-4 hover:bg-green-700 text-white">Portfolio</a></li>
+              <li><a href="/accinfo" class="block py-2 px-4 hover:bg-green-700 text-white">Upravljaj svojim računom</a></li>
               <li><a href="/help" class="block py-2 px-4 hover:bg-green-700 text-white">Pomoć</a></li>
               <li>
                 <form method="POST" action="{% url 'logout' %}">

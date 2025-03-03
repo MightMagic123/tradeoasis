@@ -34,6 +34,7 @@ urlpatterns = [
     path('education/', include('education.urls')),
     path('help/', views.help, name='help'),
     path('delete-account/', views.delete_account, name='delete_account'),
+    path('accinfo/', views.account_info, name='account_info'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

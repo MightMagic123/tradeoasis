@@ -107,3 +107,37 @@ def delete_account(request):
     
     # If not POST method, redirect back to portfolio page
     return redirect('portfolio')
+
+@login_required
+def account_info(request):
+    """
+    View for displaying user account information.
+    """
+    user = request.user
+    
+    # Get portfolio information
+    try:
+        portfolio = Portfolio.objects.get(user=user)
+        cash_balance = portfolio.cash_balance
+        
+        # Calculate total portfolio value
+        portfolio_items = portfolio.items.all()
+        total_stocks_value = Decimal("0.0000000")
+        
+        for item in portfolio_items:
+            total_stocks_value += item.get_current_value()
+            
+        total_portfolio_value = (cash_balance + total_stocks_value).quantize(Decimal("0.0000001"), rounding=ROUND_HALF_UP)
+    except Portfolio.DoesNotExist:
+        cash_balance = Decimal("0.00")
+        total_portfolio_value = Decimal("0.00")
+        portfolio_items = []
+    
+    context = {
+        'user': user,
+        'cash_balance': cash_balance,
+        'total_portfolio_value': total_portfolio_value,
+        'num_stocks': len(portfolio_items),
+    }
+    
+    return render(request, 'account_info.html', context)
