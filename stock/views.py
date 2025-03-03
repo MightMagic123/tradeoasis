@@ -7,7 +7,6 @@ from accounts.models import Portfolio, PortfolioItem
 from decimal import Decimal, ROUND_HALF_UP
 from translate.translate import translate_to_croatian
 from django.core.paginator import Paginator
-from django.contrib import messages
 
 def stock_home(request):
     # Normal stock listing flow

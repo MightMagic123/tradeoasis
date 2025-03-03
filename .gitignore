@@ -4,3 +4,4 @@ stufftodowhenstarting.txt
 .env
 *.pyc
 __pycache__/
+todo.txt
