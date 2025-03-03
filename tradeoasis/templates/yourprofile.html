@@ -1,18 +1,16 @@
 {% extends "base_layout.html" %}
-
 {% block title %}Tvoj portfolio{% endblock %}
-
 {% block content %}
 <div class="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
     <h2 class="text-3xl font-bold text-green-400 mb-4">Dobrodošli, {{ user.username }}</h2>
-    
+   
     <div class="mb-6 grid grid-cols-2 md:grid-cols-2 gap-4">
         <div>
             <h3 class="text-xl font-semibold text-white">Raspoloživa sredstva</h3>
             <p class="text-lg text-green-300">€{{ portfolio.cash_balance|floatformat:2 }}</p>
         </div>
     </div>
-    
+   
     <div>
         <h3 class="text-xl font-semibold text-white mb-3">Tvoj portfolio</h3>
         {% if portfolio_items %}
@@ -46,7 +44,7 @@
                             <span class="text-white">{{ item.profitpercentage|floatformat:7 }}%</span>
                         {% endif %}
                     </td>
-                    
+                   
                 </tr>
                 {% endfor %}
             </tbody>
@@ -55,7 +53,7 @@
         <p class="text-gray-400">Trenutno nema dionica u portfoliu.</p>
         {% endif %}
     </div>
-    
+   
     <div class="mt-6 flex justify-between">
         <div>
             <h3 class="text-xl font-semibold text-white">Ukupna vrijednost dionica</h3>
@@ -66,5 +64,62 @@
             <p class="text-2xl text-green-400 font-bold">€{{ portfolio_value|floatformat:2 }}</p>
         </div>
     </div>
+
+    <!-- Account Management Section -->
+    <div class="mt-8 pt-6 border-t border-gray-600">
+        <h3 class="text-xl font-semibold text-white mb-4">Upravljanje računom</h3>
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-gray-300">Želite izbrisati svoj račun?</p>
+                <p class="text-gray-400 text-sm">Ova radnja je trajna. Svi vaši podaci i portfolio bit će izbrisani.</p>
+            </div>
+            <button id="deleteAccountBtn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                Izbriši račun
+            </button>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="deleteConfirmModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-gray-800 p-6 rounded-lg shadow-lg max-w-md w-full">
+            <h3 class="text-xl font-bold text-white mb-4">Potvrda brisanja računa</h3>
+            <p class="text-gray-300 mb-6">Jeste li sigurni da želite izbrisati svoj račun? Ova radnja je trajna i ne može se poništiti.</p>
+            <div class="flex justify-between">
+                <button id="cancelDeleteBtn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                    Odustani
+                </button>
+                <form method="POST" action="{% url 'delete_account' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        Potvrdi brisanje
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteBtn = document.getElementById('deleteAccountBtn');
+            const modal = document.getElementById('deleteConfirmModal');
+            const cancelBtn = document.getElementById('cancelDeleteBtn');
+
+            deleteBtn.addEventListener('click', function() {
+                modal.classList.remove('hidden');
+            });
+
+            cancelBtn.addEventListener('click', function() {
+                modal.classList.add('hidden');
+            });
+
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </div>
 {% endblock %}

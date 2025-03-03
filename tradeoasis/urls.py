@@ -33,6 +33,7 @@ urlpatterns = [
     path('interest_calculator/', views.interest_calculator, name='interest_calculator'),
     path('education/', include('education.urls')),
     path('help/', views.help, name='help'),
+    path('delete-account/', views.delete_account, name='delete_account'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

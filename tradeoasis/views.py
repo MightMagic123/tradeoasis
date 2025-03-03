@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import yfinance as yf
 from accounts.models import Portfolio
 from decimal import Decimal, ROUND_HALF_UP
+from django.contrib.auth import logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 def testing(request):
     return render(request, 'test.html')
@@ -75,3 +78,32 @@ def portfolio(request):
     }
     
     return render(request, "yourprofile.html", context)
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        # Delete the user's portfolio first (assuming CASCADE doesn't handle this)
+        try:
+            portfolio = Portfolio.objects.get(user=user)
+            # Delete all portfolio items
+            portfolio.items.all().delete()
+            # Delete the portfolio itself
+            portfolio.delete()
+        except Portfolio.DoesNotExist:
+            pass  # No portfolio to delete
+        
+        # Delete the user account
+        user.delete()
+        
+        # Log the user out
+        logout(request)
+        
+        # Add a message to inform the user
+        messages.success(request, "Vaš račun je uspješno izbrisan.")
+        
+        # Redirect to homepage or login page
+        return redirect('home')  # or 'login'
+    
+    # If not POST method, redirect back to portfolio page
+    return redirect('portfolio')
